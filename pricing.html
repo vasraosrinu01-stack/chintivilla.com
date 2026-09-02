@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pricing & Interactive Cost Calculator | frndspace Villa</title>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;800&family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+  <!-- Core Stylesheets -->
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/animations.css" />
+  <link rel="stylesheet" href="css/rtl.css" />
+
+  <style>
+    .packages-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 28px;
+      margin-bottom: 70px;
+    }
+
+    .package-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-glass);
+      border-radius: var(--border-radius-xl);
+      padding: 36px 28px;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      transition: var(--transition-smooth);
+    }
+
+    .package-card:hover, .package-card.featured {
+      border-color: var(--primary);
+      box-shadow: 0 20px 45px rgba(0, 0, 0, 0.7), 0 0 25px var(--primary-glow);
+      transform: translateY(-8px);
+    }
+
+    .package-badge {
+      position: absolute;
+      top: -14px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      color: #000;
+      font-weight: 700;
+      font-size: 0.78rem;
+      padding: 4px 16px;
+      border-radius: 20px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      box-shadow: 0 4px 15px var(--primary-glow);
+    }
+
+    .package-name {
+      font-size: 1.4rem;
+      color: #fff;
+      margin-bottom: 8px;
+    }
+
+    .package-price {
+      font-size: 2.2rem;
+      font-weight: 700;
+      color: var(--primary);
+      font-family: 'Cinzel', serif;
+      margin: 16px 0 20px;
+    }
+
+    .package-price span {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: normal;
+    }
+
+    .package-features {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 30px;
+      flex-grow: 1;
+    }
+
+    .package-features li {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+    }
+
+    .package-features li i {
+      color: var(--whatsapp-color);
+      font-size: 0.85rem;
+    }
+  </style>
+</head>
+<body>
+
+  <canvas id="particlesCanvas"></canvas>
+
+  <!-- Navigation -->
+  <header class="site-header">
+    <div class="container nav-inner">
+      <a href="index.html" class="brand-logo">
+        <i class="fa-solid fa-sparkles logo-sparkle"></i>
+        frnd<span>space</span>
+        <span class="brand-badge">PRICING</span>
+      </a>
+
+      <ul class="nav-menu" id="navMenu">
+        <li><a href="index.html" class="nav-link" data-i18n="nav_home">Home</a></li>
+        <li><a href="suites.html" class="nav-link" data-i18n="nav_suites">Suites & Layout</a></li>
+        <li><a href="experiences.html" class="nav-link" data-i18n="nav_experiences">Night Experiences</a></li>
+        <li><a href="gallery.html" class="nav-link" data-i18n="nav_gallery">Night Gallery</a></li>
+        <li><a href="pricing.html" class="nav-link active" data-i18n="nav_pricing">Pricing & Calculator</a></li>
+        <li><a href="contact.html" class="nav-link" data-i18n="nav_contact">VIP Concierge</a></li>
+      </ul>
+
+      <div class="nav-actions">
+        <button class="sound-toggle-btn" id="soundToggleBtn" title="Toggle Nocturnal Ambience Audio">
+          <i class="fa-solid fa-volume-high"></i>
+          <span class="sound-wave"><span class="sound-bar"></span><span class="sound-bar"></span><span class="sound-bar"></span></span>
+        </button>
+
+        <div class="theme-picker-wrap">
+          <button class="theme-btn" id="themeBtn" title="Change Villa Ambient Glow"><i class="fa-solid fa-wand-magic-sparkles"></i></button>
+          <div class="theme-dropdown" id="themeDropdown">
+            <button class="theme-option" data-theme-val="gold"><span class="color-dot" style="background:#d4af37; color:#d4af37;"></span> Starlight Gold</button>
+            <button class="theme-option" data-theme-val="azure"><span class="color-dot" style="background:#38bdf8; color:#38bdf8;"></span> Cyan Lagoon</button>
+            <button class="theme-option" data-theme-val="purple"><span class="color-dot" style="background:#c084fc; color:#c084fc;"></span> Royal Violet</button>
+            <button class="theme-option" data-theme-val="ruby"><span class="color-dot" style="background:#fb7185; color:#fb7185;"></span> Ruby Sunset</button>
+            <button class="theme-option" data-theme-val="emerald"><span class="color-dot" style="background:#34d399; color:#34d399;"></span> Emerald Oasis</button>
+          </div>
+        </div>
+
+        <div class="lang-selector-wrap">
+          <button class="lang-btn" id="langBtn">
+            <i class="fa-solid fa-globe"></i>
+            <span id="currentLangLabel">🇬🇧 EN</span>
+            <i class="fa-solid fa-chevron-down" style="font-size: 0.7rem;"></i>
+          </button>
+          <div class="lang-dropdown" id="langDropdown">
+            <button class="lang-option" data-lang="en"><span><span class="lang-flag">🇬🇧</span> English</span> <span>EN</span></button>
+            <button class="lang-option" data-lang="te"><span><span class="lang-flag">🇮🇳</span> తెలుగు</span> <span>TE</span></button>
+            <button class="lang-option" data-lang="hi"><span><span class="lang-flag">🇮🇳</span> हिन्दी</span> <span>HI</span></button>
+            <button class="lang-option" data-lang="es"><span><span class="lang-flag">🇪🇸</span> Español</span> <span>ES</span></button>
+            <button class="lang-option" data-lang="fr"><span><span class="lang-flag">🇫🇷</span> Français</span> <span>FR</span></button>
+            <button class="lang-option" data-lang="de"><span><span class="lang-flag">🇩🇪</span> Deutsch</span> <span>DE</span></button>
+            <button class="lang-option" data-lang="it"><span><span class="lang-flag">🇮🇹</span> Italiano</span> <span>IT</span></button>
+            <button class="lang-option" data-lang="ar"><span><span class="lang-flag">🇦🇪</span> العربية</span> <span>AR</span></button>
+            <button class="lang-option" data-lang="ja"><span><span class="lang-flag">🇯🇵</span> 日本語</span> <span>JA</span></button>
+            <button class="lang-option" data-lang="ru"><span><span class="lang-flag">🇷🇺</span> Русский</span> <span>RU</span></button>
+          </div>
+        </div>
+
+        <button class="mobile-toggle" id="mobileToggle"><i class="fa-solid fa-bars"></i></button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Banner -->
+  <section class="hero-section" style="min-height: 48vh; background-image: url('https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1920&q=80');">
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <span class="badge-glow reveal"><i class="fa-solid fa-gem"></i> Transparent Luxury</span>
+      <h1 class="hero-title reveal reveal-delay-1">Villa Packages & Live Cost Estimator</h1>
+      <p class="hero-subtitle reveal reveal-delay-2">
+        Transparent pricing with direct WhatsApp confirmation and no hidden service fees.
+      </p>
+    </div>
+  </section>
+
+  <!-- Curated Packages Grid -->
+  <section class="section">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="section-tag">Curated Stays</span>
+        <h2 class="section-title">Select A Villa Package</h2>
+        <p class="section-desc">Choose from our popular night stay formats or calculate a bespoke custom rate below.</p>
+      </div>
+
+      <div class="packages-grid">
+        <!-- Package 1: Weekday Stargaze -->
+        <div class="package-card tilt-card reveal reveal-delay-1">
+          <h3 class="package-name">Midnight Getaway</h3>
+          <p style="color: var(--text-muted); font-size: 0.85rem;">Mon - Thu Stays</p>
+          <div class="package-price">₹14,999 <span>/ night (up to 6 guests)</span></div>
+          <ul class="package-features">
+            <li><i class="fa-solid fa-check"></i> Entire Gated Private Villa Access</li>
+            <li><i class="fa-solid fa-check"></i> Heated Pool with Night Illumination</li>
+            <li><i class="fa-solid fa-check"></i> Acoustic Bonfire Setup (1 wood bundle)</li>
+            <li><i class="fa-solid fa-check"></i> High-Speed 300 Mbps Wi-Fi</li>
+            <li><i class="fa-solid fa-check"></i> 24/7 Caretaker & Butler assistance</li>
+          </ul>
+          <a href="https://wa.me/918688661938?text=Hi%20frndspace,%20I%20want%20to%20book%20the%20Midnight%20Getaway%20(Weekday)%20package." target="_blank" class="btn btn-glass">
+            <i class="fa-brands fa-whatsapp"></i> Reserve Weekday
+          </a>
+        </div>
+
+        <!-- Package 2: Weekend Blast (Featured) -->
+        <div class="package-card featured tilt-card reveal reveal-delay-2">
+          <span class="package-badge">Most Popular</span>
+          <h3 class="package-name">Weekend Starlight Blast</h3>
+          <p style="color: var(--text-muted); font-size: 0.85rem;">Fri - Sun Stays</p>
+          <div class="package-price">₹19,999 <span>/ night (up to 8 guests)</span></div>
+          <ul class="package-features">
+            <li><i class="fa-solid fa-check"></i> Entire 4-Suite Luxury Villa Estate</li>
+            <li><i class="fa-solid fa-check"></i> Heated Infinity Pool & Jacuzzi Terrace</li>
+            <li><i class="fa-solid fa-check"></i> Free Bonfire & Complete BBQ Grill Kit</li>
+            <li><i class="fa-solid fa-check"></i> Acoustic Party Sound System included</li>
+            <li><i class="fa-solid fa-check"></i> Late Night Swimming allowed 24/7</li>
+          </ul>
+          <a href="https://wa.me/918688661938?text=Hi%20frndspace,%20I%20want%20to%20book%20the%20Weekend%20Starlight%20Blast%20package." target="_blank" class="btn btn-whatsapp">
+            <i class="fa-brands fa-whatsapp"></i> Reserve Weekend
+          </a>
+        </div>
+
+        <!-- Package 3: Birthday Celebration -->
+        <div class="package-card tilt-card reveal reveal-delay-3">
+          <h3 class="package-name">Celebration & Party VIP</h3>
+          <p style="color: var(--text-muted); font-size: 0.85rem;">Birthdays / Anniversaries</p>
+          <div class="package-price">₹26,999 <span>/ night (up to 12 guests)</span></div>
+          <ul class="package-features">
+            <li><i class="fa-solid fa-check"></i> Full Villa Access & Event Authorization</li>
+            <li><i class="fa-solid fa-check"></i> 150" Open-Air HD Laser Cinema Setup</li>
+            <li><i class="fa-solid fa-check"></i> Dedicated Chef for Live BBQ Grilling</li>
+            <li><i class="fa-solid fa-check"></i> Balloon & Neon Party Backdrop Decor</li>
+            <li><i class="fa-solid fa-check"></i> Priority Flexible Check-In & Check-Out</li>
+          </ul>
+          <a href="https://wa.me/918688661938?text=Hi%20frndspace,%20I%20want%20to%20book%20the%20Celebration%20%26%20Party%20VIP%20package." target="_blank" class="btn btn-glass">
+            <i class="fa-brands fa-whatsapp"></i> Reserve Celebration
+          </a>
+        </div>
+      </div>
+
+      <!-- Real-Time Interactive Dynamic Cost Calculator -->
+      <div class="section-header reveal" style="margin-top: 40px;">
+        <span class="section-tag">Instant Quote</span>
+        <h2 class="section-title">Live Dynamic Price Calculator</h2>
+        <p class="section-desc">Customize your check-in dates, guest count, and add-on services for an instant live estimate.</p>
+      </div>
+
+      <div class="pricing-calculator-box reveal reveal-delay-1">
+        <div class="calc-grid">
+          
+          <!-- Options Column -->
+          <div class="calc-options">
+            <div>
+              <div class="calc-section-heading">
+                <i class="fa-solid fa-calendar-days"></i> Step 1: Select Stay Dates
+              </div>
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+                <div class="input-group">
+                  <label class="input-label" for="calcCheckIn">Check-In</label>
+                  <input type="date" id="calcCheckIn" class="input-field" />
+                </div>
+                <div class="input-group">
+                  <label class="input-label" for="calcCheckOut">Check-Out</label>
+                  <input type="date" id="calcCheckOut" class="input-field" />
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <div class="calc-section-heading">
+                <i class="fa-solid fa-users"></i> Step 2: Guests & Event Type
+              </div>
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+                <div class="input-group">
+                  <label class="input-label" for="calcGuests">Total Guests</label>
+                  <select id="calcGuests" class="select-field">
+                    <option value="4">4 Guests</option>
+                    <option value="6" selected>6 Guests (Standard Base)</option>
+                    <option value="8">8 Guests</option>
+                    <option value="10">10 Guests</option>
+                    <option value="12">12 Guests</option>
+                    <option value="15">15+ Guests (VIP Gathering)</option>
+                  </select>
+                </div>
+                <div class="input-group">
+                  <label class="input-label" for="calcStayType">Stay Purpose</label>
+                  <select id="calcStayType" class="select-field">
+                    <option value="Friends Gathering">Friends Gathering</option>
+                    <option value="Birthday Celebration">Birthday / Night Party</option>
+                    <option value="Romantic Getaway">Romantic Getaway</option>
+                    <option value="Family Holiday">Family Holiday</option>
+                    <option value="Photoshoot Production">Photoshoot Production</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <div class="calc-section-heading">
+                <i class="fa-solid fa-sparkles"></i> Step 3: Optional Night Add-Ons
+              </div>
+              <div class="addons-grid">
+                <label class="addon-card">
+                  <input type="checkbox" class="addon-checkbox" value="1999" />
+                  <div class="addon-info">
+                    <div class="addon-name">Live Barbecue Kit</div>
+                    <div class="addon-price">+₹1,999 (Grill & Charcoal)</div>
+                  </div>
+                </label>
+
+                <label class="addon-card">
+                  <input type="checkbox" class="addon-checkbox" value="999" />
+                  <div class="addon-info">
+                    <div class="addon-name">Bonfire Wood Bundle</div>
+                    <div class="addon-price">+₹999 (Cedar Firewood)</div>
+                  </div>
+                </label>
+
+                <label class="addon-card">
+                  <input type="checkbox" class="addon-checkbox" value="2499" />
+                  <div class="addon-info">
+                    <div class="addon-name">DJ Party Sound System</div>
+                    <div class="addon-price">+₹2,499 (Surround Rig)</div>
+                  </div>
+                </label>
+
+                <label class="addon-card">
+                  <input type="checkbox" class="addon-checkbox" value="1499" />
+                  <div class="addon-info">
+                    <div class="addon-name">Open-Air 4K Cinema</div>
+                    <div class="addon-price">+₹1,499 (Laser Projector)</div>
+                  </div>
+                </label>
+
+                <label class="addon-card">
+                  <input type="checkbox" class="addon-checkbox" value="3999" />
+                  <div class="addon-info">
+                    <div class="addon-name">Private Chef-on-Demand</div>
+                    <div class="addon-price">+₹3,999 (Live BBQ & Dinner)</div>
+                  </div>
+                </label>
+
+                <label class="addon-card">
+                  <input type="checkbox" class="addon-checkbox" value="2999" />
+                  <div class="addon-info">
+                    <div class="addon-name">Drone 4K Night Reel</div>
+                    <div class="addon-price">+₹2,999 (Aerial Shoot)</div>
+                  </div>
+                </label>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Live Summary Column -->
+          <div class="calc-summary-card">
+            <div>
+              <h3 style="font-size: 1.3rem; margin-bottom: 20px; color: #fff;">Estimated Reservation Summary</h3>
+              
+              <div class="summary-row">
+                <span>Base Villa Rate:</span>
+                <span id="summaryBaseRate">₹14,999</span>
+              </div>
+
+              <div class="summary-row">
+                <span>Duration:</span>
+                <span id="summaryNights">1 Night</span>
+              </div>
+
+              <div class="summary-row">
+                <span>Guest Allocation:</span>
+                <span id="summaryGuestsFee">₹0 (6 guests included)</span>
+              </div>
+
+              <div class="summary-row">
+                <span>Selected Add-ons Total:</span>
+                <span id="summaryAddons">₹0</span>
+              </div>
+
+              <div class="summary-row">
+                <span>Taxes & Butler Care:</span>
+                <span>Included (0% Surcharge)</span>
+              </div>
+
+              <div class="summary-row total-row">
+                <span>Estimated Total:</span>
+                <span class="total-amount" id="summaryTotal">₹14,999</span>
+              </div>
+            </div>
+
+            <div style="margin-top: 30px;">
+              <button id="calcBookWhatsapp" class="btn btn-whatsapp btn-lg" style="width: 100%;">
+                <i class="fa-brands fa-whatsapp" style="font-size: 1.3rem;"></i> Lock Dates via WhatsApp
+              </button>
+              <p style="color: var(--text-muted); font-size: 0.78rem; text-align: center; margin-top: 10px;">
+                <i class="fa-solid fa-lock"></i> Direct reservation guarantees 100% best rates and immediate date confirmation.
+              </p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Floating WhatsApp -->
+  <div class="floating-actions">
+    <button class="scroll-top-btn" id="scrollTopBtn"><i class="fa-solid fa-arrow-up"></i></button>
+    <a href="https://wa.me/918688661938?text=Hi%20frndspace,%20I%20want%20to%20inquire%20about%20villa%20rates." class="whatsapp-float-btn" target="_blank" title="Instant WhatsApp">
+      <div class="whatsapp-pulse-ring"></div>
+      <i class="fa-brands fa-whatsapp"></i>
+      <span class="whatsapp-tooltip">Chat with Concierge</span>
+    </a>
+  </div>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-bottom">
+        <p>&copy; 2026 frndspace Luxury Stays. All rights reserved. Direct Hotline: +91 8688661938</p>
+        <p><a href="index.html" style="color: var(--primary);">Back to Home</a></p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/i18n.js"></script>
+  <script src="js/particles.js"></script>
+  <script src="js/soundscape.js"></script>
+  <script src="js/calculator.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

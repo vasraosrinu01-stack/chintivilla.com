@@ -1,0 +1,61 @@
+/* ==========================================================================
+   FRNDSPACE LUXURY NIGHT VILLA - RIGHT-TO-LEFT (RTL) SUPPORT (ARABIC)
+   ========================================================================== */
+
+body[dir="rtl"] {
+  direction: rtl;
+  text-align: right;
+}
+
+body[dir="rtl"] .nav-inner,
+body[dir="rtl"] .booking-form-grid,
+body[dir="rtl"] .booking-btn-wrapper,
+body[dir="rtl"] .footer-grid,
+body[dir="rtl"] .stargaze-bar,
+body[dir="rtl"] .calc-grid,
+body[dir="rtl"] .summary-row,
+body[dir="rtl"] .reviewer-meta,
+body[dir="rtl"] .footer-contact-item {
+  direction: rtl;
+}
+
+body[dir="rtl"] .lang-dropdown,
+body[dir="rtl"] .theme-dropdown {
+  right: auto;
+  left: 0;
+}
+
+body[dir="rtl"] .lang-option,
+body[dir="rtl"] .theme-option {
+  text-align: right;
+}
+
+body[dir="rtl"] .whatsapp-tooltip {
+  right: auto;
+  left: calc(100% + 14px);
+  transform: translateX(-10px);
+}
+
+body[dir="rtl"] .whatsapp-float-btn:hover .whatsapp-tooltip {
+  transform: translateX(0);
+}
+
+body[dir="rtl"] .floating-actions {
+  right: auto;
+  left: 30px;
+}
+
+body[dir="rtl"] .footer-title::after {
+  left: auto;
+  right: 0;
+}
+
+body[dir="rtl"] .footer-links a:hover {
+  padding-left: 0;
+  padding-right: 5px;
+}
+
+body[dir="rtl"] .brand-badge {
+  margin-left: 0;
+  margin-right: 6px;
+}
